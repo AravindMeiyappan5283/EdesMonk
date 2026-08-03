@@ -1,0 +1,128 @@
+@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+<h1>Checkout</h1>
+<div asp-validation-summary="All"></div>
+@if (ViewData["CheckoutMessage"] is string checkoutMessage)
+{
+    <div class="alert success">@checkoutMessage</div>
+}
+<section class="grid">
+    @if (Model.RequiresPhoneLookup)
+    {
+        <form class="panel checkout-step-panel" action="/checkout/phone" method="post">
+            @Html.AntiForgeryToken()
+            <span class="badge">Step 1</span>
+            <h2>Enter mobile number</h2>
+            <p class="muted">We will check for an existing customer. If the mobile number is new, a customer profile will be created for this checkout.</p>
+            <label for="checkoutPhone">
+                <span>Mobile number</span>
+                <input id="checkoutPhone" name="checkoutPhone" inputmode="tel" autocomplete="tel" required />
+            </label>
+            <button type="submit">Continue to Address</button>
+        </form>
+    }
+    else
+    {
+        <form class="panel" action="/checkout" method="post">
+            @Html.AntiForgeryToken()
+            <div class="checkout-heading-row">
+                <div>
+                    <span class="badge">Step 2</span>
+                    <h2>Delivery address</h2>
+                    <p class="muted">Checkout mobile: @Model.CheckoutPhone</p>
+                </div>
+                <button class="secondary" type="submit" form="change-mobile-form">Change Mobile</button>
+            </div>
+
+            @if (Model.SavedAddresses.Count > 0)
+            {
+                <div class="saved-address-list">
+                    <p class="muted">Saved address loaded for this mobile. Select another address or add a new one.</p>
+                    @foreach (var saved in Model.SavedAddresses)
+                    {
+                        <button class="secondary saved-address-button"
+                                type="button"
+                                data-name="@saved.Address.Name"
+                                data-email="@saved.Address.Email"
+                                data-phone="@saved.Address.Phone"
+                                data-address="@saved.Address.AddressLine1"
+                                data-city="@saved.Address.City"
+                                data-state="@saved.Address.State"
+                                data-pincode="@saved.Address.Pincode">
+                            @saved.Label - @saved.Address.City, @saved.Address.Pincode
+                        </button>
+                    }
+                    <button class="secondary saved-address-button" type="button" data-clear-address="true">Add New Address</button>
+                </div>
+            }
+            else
+            {
+                <p class="muted">No saved address found for this mobile. Add the delivery address below.</p>
+            }
+
+            <div class="form-grid">
+                <label asp-for="Name"><span>Name</span><input asp-for="Name" data-address-field="name" autocomplete="name" /></label>
+                <label asp-for="Email"><span>Email</span><input asp-for="Email" data-address-field="email" autocomplete="email" /></label>
+                <label asp-for="Phone"><span>Phone</span><input asp-for="Phone" data-address-field="phone" autocomplete="tel" /></label>
+                <label asp-for="Pincode"><span>PIN code</span><input asp-for="Pincode" data-address-field="pincode" inputmode="numeric" autocomplete="postal-code" /></label>
+                <label asp-for="City"><span>City</span><input asp-for="City" data-address-field="city" autocomplete="address-level2" /></label>
+                <label asp-for="State"><span>State</span><input asp-for="State" data-address-field="state" autocomplete="address-level1" /></label>
+            </div>
+
+            <label asp-for="AddressLine1"><span>Address</span><textarea asp-for="AddressLine1" data-address-field="address" autocomplete="street-address"></textarea></label>
+
+            <label class="checkbox-row"><input asp-for="SaveAddress" /> <span>Save this address for this mobile</span></label>
+            <label asp-for="AddressLabel"><span>Address label</span><input asp-for="AddressLabel" /></label>
+
+            <p class="muted">Razorpay is intentionally not integrated in this build. The order will be created as pending manual payment/admin review.</p>
+            <button type="submit">Create Order</button>
+        </form>
+
+        <form id="change-mobile-form" action="/checkout/phone/change" method="post">
+            @Html.AntiForgeryToken()
+        </form>
+    }
+
+    <aside class="panel">
+        <h2>Order summary</h2>
+        @foreach (var line in Model.Quote.Lines)
+        {
+            <p>@line.ProductName x @line.Quantity <strong>&#8377;@line.LineTotal.ToString("N0")</strong></p>
+        }
+        <hr />
+        <p>Subtotal: &#8377;@Model.Quote.Subtotal.ToString("N0")</p>
+        <p>Discount: &#8377;@Model.Quote.DiscountAmount.ToString("N0")</p>
+        <p>Shipping: &#8377;@Model.Quote.ShippingCharge.ToString("N0")</p>
+        <p class="price">Total: &#8377;@Model.Quote.TotalAmount.ToString("N0")</p>
+    </aside>
+</section>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.saved-address-button').forEach((button) => {
+            button.addEventListener('click', () => {
+                if (button.dataset.clearAddress) {
+                    document.querySelectorAll('[data-address-field]').forEach((field) => {
+                        field.value = field.dataset.addressField === 'phone' ? '@Model.CheckoutPhone' : '';
+                    });
+
+                    const label = document.querySelector('[name="AddressLabel"]');
+                    if (label) {
+                        label.value = 'Home';
+                    }
+
+                    return;
+                }
+
+                for (const [key, value] of Object.entries(button.dataset)) {
+                    const field = document.querySelector(`[data-address-field="${key}"]`);
+                    if (field) {
+                        field.value = value;
+                    }
+                }
+            });
+        });
+    </script>
+}

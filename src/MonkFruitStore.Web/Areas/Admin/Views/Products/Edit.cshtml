@@ -1,0 +1,31 @@
+@model Product
+@{
+    ViewData["Title"] = "Edit Product";
+}
+<h1>Edit Product</h1>
+<div asp-validation-summary="All"></div>
+<form class="panel" asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="CreatedAt" />
+    <div class="form-grid">
+        <label asp-for="Name"><span>Name</span><input asp-for="Name" /></label>
+        <label asp-for="Slug"><span>Slug</span><input asp-for="Slug" /></label>
+        <label asp-for="Sku"><span>SKU</span><input asp-for="Sku" /></label>
+        <label asp-for="PackSize"><span>Pack size</span><input asp-for="PackSize" /></label>
+        <label asp-for="Mrp"><span>MRP</span><input asp-for="Mrp" type="number" step="0.01" /></label>
+        <label asp-for="SellingPrice"><span>Selling price</span><input asp-for="SellingPrice" type="number" step="0.01" /></label>
+        <label asp-for="StockQuantity"><span>Stock</span><input asp-for="StockQuantity" type="number" /></label>
+        <label asp-for="LowStockThreshold"><span>Low stock alert</span><input asp-for="LowStockThreshold" type="number" /></label>
+        <label asp-for="ImagePath"><span>Image path</span><input asp-for="ImagePath" /></label>
+        <label asp-for="CategoryId"><span>Category</span><input asp-for="CategoryId" /></label>
+    </div>
+    <label asp-for="ShortDescription"><span>Short description</span><textarea asp-for="ShortDescription"></textarea></label>
+    <label asp-for="Description"><span>Description</span><textarea asp-for="Description"></textarea></label>
+    <label asp-for="Ingredients"><span>Ingredients</span><textarea asp-for="Ingredients"></textarea></label>
+    <div class="actions">
+        <label><span>Active</span><input asp-for="IsActive" /></label>
+        <label><span>Featured</span><input asp-for="IsFeatured" /></label>
+    </div>
+    <button type="submit">Save Product</button>
+</form>

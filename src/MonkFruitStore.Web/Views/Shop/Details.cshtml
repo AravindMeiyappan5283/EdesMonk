@@ -1,0 +1,25 @@
+@model Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+<section class="hero product-detail">
+    <div>
+        <img src="@Model.ImagePath" alt="@Model.Name" />
+    </div>
+    <div>
+        <span class="badge">@Model.PackSize</span>
+        <h1>@Model.Name</h1>
+        <p class="muted">@Model.Description</p>
+        <p><strong>SKU:</strong> @Model.Sku</p>
+        <p><strong>Ingredients:</strong> @Model.Ingredients</p>
+        <p><strong>Stock:</strong> @Model.StockQuantity</p>
+        <p class="price">₹@Model.SellingPrice.ToString("N0") <span class="muted"><s>₹@Model.Mrp.ToString("N0")</s></span></p>
+        <form class="actions" asp-controller="Cart" asp-action="Add" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ProductId" value="@Model.Id" />
+            <input type="number" name="Quantity" value="1" min="1" max="20" aria-label="Quantity" />
+            <button type="submit">Add to Cart</button>
+            <a class="btn secondary" asp-controller="Shop" asp-action="Index">Back to Shop</a>
+        </form>
+    </div>
+</section>

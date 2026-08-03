@@ -1,0 +1,11 @@
+@model Order
+@{
+    ViewData["Title"] = "Order confirmation";
+}
+<section class="panel">
+    <h1>Order created</h1>
+    <p class="badge">@Model.OrderNumber</p>
+    <p>Your order is pending manual payment/admin confirmation because Razorpay is excluded from this implementation.</p>
+    <p class="price">₹@Model.TotalAmount.ToString("N0")</p>
+    <a class="btn" asp-controller="Orders" asp-action="AccountOrders">View Orders</a>
+</section>

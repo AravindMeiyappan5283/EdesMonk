@@ -1,0 +1,41 @@
+@model Order
+@{
+    ViewData["Title"] = Model.OrderNumber;
+}
+<h1>@Model.OrderNumber</h1>
+@if (TempData["Error"] is string error)
+{
+    <div class="alert">@error</div>
+}
+<section class="grid">
+    <div class="panel">
+        <h2>Customer</h2>
+        <p>@Model.ShippingAddress.Name<br />@Model.ShippingAddress.Phone<br />@Model.ShippingAddress.Email</p>
+        <p>@Model.ShippingAddress.AddressLine1, @Model.ShippingAddress.City, @Model.ShippingAddress.State - @Model.ShippingAddress.Pincode</p>
+    </div>
+    <div class="panel">
+        <h2>Items</h2>
+        @foreach (var line in Model.Items)
+        {
+            <p>@line.ProductName x @line.Quantity - ₹@line.LineTotal.ToString("N0")</p>
+        }
+        <p class="price">₹@Model.TotalAmount.ToString("N0")</p>
+    </div>
+    <form class="panel" asp-action="Update" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="OrderId" value="@Model.Id" />
+        <label><span>Order status</span><select name="OrderStatus" asp-for="OrderStatus" asp-items="Html.GetEnumSelectList<OrderStatus>()"></select></label>
+        <label><span>Payment status</span><select name="PaymentStatus" asp-for="PaymentStatus" asp-items="Html.GetEnumSelectList<PaymentStatus>()"></select></label>
+        <label><span>Tracking number</span><input name="TrackingNumber" value="@Model.TrackingNumber" /></label>
+        <label><span>Admin note</span><textarea name="AdminNote">@Model.AdminNote</textarea></label>
+        <button type="submit">Update Order</button>
+        <p class="muted">Setting payment to Captured deducts stock once and writes inventory audit entries.</p>
+    </form>
+</section>
+<section class="panel">
+    <h2>Timeline</h2>
+    @foreach (var item in Model.Timeline)
+    {
+        <p>@item</p>
+    }
+</section>

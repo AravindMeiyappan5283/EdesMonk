@@ -1,0 +1,10 @@
+@model StoreSettings
+@{
+    ViewData["Title"] = "Contact";
+}
+<section class="panel">
+    <h1>Contact</h1>
+    <p>Email: <a href="mailto:@Model.SupportEmail">@Model.SupportEmail</a></p>
+    <p>Phone: @Model.SupportPhone</p>
+    <p>WhatsApp: @Model.WhatsAppNumber</p>
+</section>

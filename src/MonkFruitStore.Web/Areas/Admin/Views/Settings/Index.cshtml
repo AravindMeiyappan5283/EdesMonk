@@ -1,0 +1,22 @@
+@model StoreSettings
+@{
+    ViewData["Title"] = "Settings";
+}
+<h1>Settings</h1>
+@if (TempData["Saved"] is string saved)
+{
+    <div class="alert success">@saved</div>
+}
+<form class="panel" asp-action="Index" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-grid">
+        <label asp-for="CompanyName"><span>Company</span><input asp-for="CompanyName" /></label>
+        <label asp-for="SupportEmail"><span>Support email</span><input asp-for="SupportEmail" /></label>
+        <label asp-for="SupportPhone"><span>Phone</span><input asp-for="SupportPhone" /></label>
+        <label asp-for="WhatsAppNumber"><span>WhatsApp</span><input asp-for="WhatsAppNumber" /></label>
+        <label asp-for="FreeShippingThreshold"><span>Free shipping above</span><input asp-for="FreeShippingThreshold" type="number" step="0.01" /></label>
+        <label asp-for="FlatShippingCharge"><span>Flat shipping</span><input asp-for="FlatShippingCharge" type="number" step="0.01" /></label>
+    </div>
+    <label asp-for="ShippingPolicy"><span>Shipping policy</span><textarea asp-for="ShippingPolicy"></textarea></label>
+    <button type="submit">Save Settings</button>
+</form>

@@ -1,0 +1,34 @@
+@model AdminDashboard
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+<h1>Admin Dashboard</h1>
+<nav class="actions">
+    <a class="btn secondary" asp-area="Admin" asp-controller="Products" asp-action="Index">Products</a>
+    <a class="btn secondary" asp-area="Admin" asp-controller="Orders" asp-action="Index">Orders</a>
+    <a class="btn secondary" asp-area="Admin" asp-controller="Inventory" asp-action="Index">Inventory</a>
+    <a class="btn secondary" asp-area="Admin" asp-controller="Coupons" asp-action="Index">Coupons</a>
+    <a class="btn secondary" asp-area="Admin" asp-controller="Settings" asp-action="Index">Settings</a>
+</nav>
+<section class="metric-grid">
+    <div class="metric"><span class="muted">Today sales</span><h2>₹@Model.TodaySales.ToString("N0")</h2></div>
+    <div class="metric"><span class="muted">Total orders</span><h2>@Model.TotalOrders</h2></div>
+    <div class="metric"><span class="muted">Pending actions</span><h2>@Model.PendingOrders</h2></div>
+    <div class="metric"><span class="muted">Low stock</span><h2>@Model.LowStockProducts</h2></div>
+</section>
+<section class="grid">
+    <div class="panel">
+        <h2>Recent Orders</h2>
+        @foreach (var order in Model.RecentOrders)
+        {
+            <p><a asp-area="Admin" asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id">@order.OrderNumber</a> - @order.OrderStatus / ₹@order.TotalAmount.ToString("N0")</p>
+        }
+    </div>
+    <div class="panel">
+        <h2>Low Stock</h2>
+        @foreach (var product in Model.LowStock)
+        {
+            <p>@product.Name - @product.StockQuantity left</p>
+        }
+    </div>
+</section>

@@ -1,0 +1,14 @@
+.dotnet/
+.tmp/
+bin/
+obj/
+**/bin/
+**/obj/
+**/App_Data/Keys/
+**/App_Data/*.json
+**/App_Data/*.tmp
+**/appsettings.Local.json
+**/*service-account*.json
+**/firebase-adminsdk*.json
+.env
+.env.*

@@ -1,0 +1,260 @@
+@model HomeViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "EdesMonk | Naturally Sweet, Zero Compromise";
+}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EdesMonk | Naturally Sweet, Zero Compromise</title>
+    <meta
+      name="description"
+      content="Discover EdesMonk monk fruit sweetener, a clean natural sweetener for coffee, tea, baking, and everyday wellness routines."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+  </head>
+  <body>
+    <div class="announcement">Launch offer: 50 servings per pack for everyday sweetness</div>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="EdesMonk home">
+        <span class="brand-mark">EM</span>
+        <span>EdesMonk</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#benefits">Benefits</a>
+        <a href="#products">Products</a>
+        <a href="#usage">Usage</a>
+        <a href="#faq">FAQ</a>
+        <a asp-controller="Cart" asp-action="Index">Cart</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+          <a asp-controller="Orders" asp-action="AccountOrders">Orders</a>
+        }
+        else
+        {
+          <a asp-controller="Account" asp-action="Login">Login</a>
+        }
+      </nav>
+      <a class="nav-cta" asp-controller="Shop" asp-action="Index">Shop Now</a>
+    </header>
+
+    <main id="home">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow reveal">Natural monk fruit sweetener</p>
+          <h1 class="reveal">Sweetness that fits beautifully into daily life.</h1>
+          <p class="hero-text reveal">
+            EdesMonk brings clean, balanced sweetness to coffee, tea, baking, and desserts
+            without the heavy sugar feeling. One teaspoon matches the sweetness of one
+            teaspoon of sugar.
+          </p>
+          <div class="hero-actions reveal">
+            <a class="btn btn-primary" href="#products">Explore Products</a>
+            <a class="btn btn-secondary" href="#benefits">See Benefits</a>
+          </div>
+          <ul class="hero-points reveal" aria-label="Product highlights">
+            <li><strong>0</strong><span>Sugar</span></li>
+            <li><strong>0</strong><span>Calories</span></li>
+            <li><strong>50</strong><span>Servings</span></li>
+            <li><strong>1:1</strong><span>Use Guide</span></li>
+          </ul>
+        </div>
+
+        <div class="hero-product reveal">
+          <div class="product-halo"></div>
+          <img
+            src="~/images/Edesmonk3.png"
+            alt="EdesMonk monk fruit sweetener pack"
+            class="product-image"
+            asp-append-version="true"
+          />
+          <div class="floating-note note-top">Coffee</div>
+          <div class="floating-note note-mid">Baking</div>
+          <div class="floating-note note-low">Tea</div>
+        </div>
+      </section>
+
+      <section class="trust-strip reveal" aria-label="Trust highlights">
+        <div>
+          <strong>Clean Taste</strong>
+          <span>No harsh aftertaste</span>
+        </div>
+        <div>
+          <strong>Daily Friendly</strong>
+          <span>For drinks and desserts</span>
+        </div>
+        <div>
+          <strong>Easy Switch</strong>
+          <span>Use like regular sugar</span>
+        </div>
+        <div>
+          <strong>Store Ready</strong>
+          <span>Cart and checkout enabled</span>
+        </div>
+      </section>
+
+      <section class="section" id="benefits">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Why choose EdesMonk</p>
+          <h2>A cleaner way to keep sweetness in your routine.</h2>
+        </div>
+        <div class="card-grid">
+          <article class="info-card reveal">
+            <span class="card-icon">01</span>
+            <h3>Balanced Sweetness</h3>
+            <p>Enjoy a familiar sweetness profile that works smoothly in everyday recipes.</p>
+          </article>
+          <article class="info-card reveal">
+            <span class="card-icon">02</span>
+            <h3>Made For Versatility</h3>
+            <p>Stir it into coffee, tea, smoothies, desserts, sauces, and baked goods.</p>
+          </article>
+          <article class="info-card reveal">
+            <span class="card-icon">03</span>
+            <h3>Simple Daily Choice</h3>
+            <p>Keep the taste you enjoy while reducing the amount of regular sugar you use.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="products">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Product highlights</p>
+          <h2>Choose the format that matches your kitchen rhythm.</h2>
+        </div>
+        <div class="product-grid">
+          @foreach (var product in Model.FeaturedProducts)
+          {
+            <article class="product-card reveal @(product.IsFeatured ? "featured" : "")">
+              <div class="landing-product-media">
+                <img src="@product.ImagePath" alt="@product.Name" />
+              </div>
+              <p class="product-label">@product.PackSize</p>
+              <h3>@product.Name</h3>
+              <p>@product.ShortDescription</p>
+              <p class="price">&#8377;@product.SellingPrice.ToString("N0") <span class="muted"><s>&#8377;@product.Mrp.ToString("N0")</s></span></p>
+              <div class="landing-product-actions">
+                <a asp-controller="Shop" asp-action="Details" asp-route-slug="@product.Slug" class="text-link">View details</a>
+                <form asp-controller="Cart" asp-action="Add" method="post">
+                  @Html.AntiForgeryToken()
+                  <input type="hidden" name="ProductId" value="@product.Id" />
+                  <input type="hidden" name="Quantity" value="1" />
+                  <button class="mini-cart-button" type="submit">Add to Cart</button>
+                </form>
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+
+      <section class="section split-section" id="usage">
+        <div class="section-heading reveal">
+          <p class="eyebrow">How to use</p>
+          <h2>Fits into the moments you already love.</h2>
+        </div>
+        <div class="usage-panel reveal">
+          <div class="usage-card">
+            <span>01</span>
+            <h3>Coffee & Tea</h3>
+            <p>Stir into hot or iced drinks for a clean sweet finish.</p>
+          </div>
+          <div class="usage-card">
+            <span>02</span>
+            <h3>Breakfast</h3>
+            <p>Add to oats, smoothies, curd bowls, and fruit toppings.</p>
+          </div>
+          <div class="usage-card">
+            <span>03</span>
+            <h3>Desserts</h3>
+            <p>Use in puddings, sweets, cookies, cakes, and sauces.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Customer stories</p>
+          <h2>Sweetness that feels effortless.</h2>
+        </div>
+        <div class="testimonial-grid">
+          <blockquote class="reveal">
+            "Finally, a sweetener that tastes good and fits my routine."
+            <footer>- Maya, home baker</footer>
+          </blockquote>
+          <blockquote class="reveal">
+            "It has become my go-to for coffee and desserts."
+            <footer>- Daniel, tea drinker</footer>
+          </blockquote>
+          <blockquote class="reveal">
+            "The flavor is clean and balanced, with no harsh aftertaste."
+            <footer>- Priya, recipe creator</footer>
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="faq">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Frequently asked questions</p>
+          <h2>Everything you need to know before you switch.</h2>
+        </div>
+        <div class="faq-list">
+          <details class="reveal">
+            <summary>Is monk fruit sweetener suitable for baking?</summary>
+            <p>Yes. It works well in many sweet recipes, especially when paired with a baking-friendly blend.</p>
+          </details>
+          <details class="reveal">
+            <summary>Does it taste like sugar?</summary>
+            <p>It offers pleasant sweetness with a cleaner flavor profile than many artificial alternatives.</p>
+          </details>
+          <details class="reveal">
+            <summary>Can I buy from this site?</summary>
+            <p>Yes. Product listing, add-to-cart, checkout, pending orders, and admin order management are implemented.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer" id="contact">
+      <div>
+        <p class="eyebrow">Ready to switch?</p>
+        <h2>Bring cleaner sweetness into your kitchen.</h2>
+      </div>
+      <a class="btn btn-primary" asp-controller="Shop" asp-action="Index">Shop Now</a>
+    </footer>
+
+    <script>
+      const topbar = document.querySelector('.topbar');
+      const revealItems = document.querySelectorAll('.reveal');
+
+      window.addEventListener('scroll', () => {
+        topbar.classList.toggle('is-scrolled', window.scrollY > 20);
+      });
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.16 }
+      );
+
+      revealItems.forEach((item, index) => {
+        item.style.transitionDelay = `${Math.min(index * 45, 240)}ms`;
+        observer.observe(item);
+      });
+    </script>
+  </body>
+</html>

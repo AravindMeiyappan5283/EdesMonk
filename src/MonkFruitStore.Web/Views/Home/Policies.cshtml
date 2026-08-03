@@ -1,0 +1,18 @@
+@model StoreSettings
+@{
+    ViewData["Title"] = "Policies";
+}
+<section class="grid">
+    <article class="card">
+        <h2>Shipping Policy</h2>
+        <p>@Model.ShippingPolicy</p>
+    </article>
+    <article class="card">
+        <h2>Cancellation / Refunds</h2>
+        <p>Refund and cancellation rules should be finalized with the business before launch. Admin can mark orders cancelled or refunded.</p>
+    </article>
+    <article class="card">
+        <h2>Privacy & Terms</h2>
+        <p>Do not store card numbers, UPI PINs, OTPs, or payment secrets. Publish final legal policies before production.</p>
+    </article>
+</section>

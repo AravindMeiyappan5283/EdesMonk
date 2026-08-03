@@ -1,0 +1,21 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+<section class="panel" style="max-width: 560px">
+    <h1>Create Account</h1>
+    <p class="muted">Your guest cart will be merged into this account after registration.</p>
+    <div asp-validation-summary="All"></div>
+    <form asp-action="Register" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ReturnUrl" />
+        <label asp-for="Name"><span>Name</span><input asp-for="Name" autocomplete="name" /></label>
+        <label asp-for="Email"><span>Email</span><input asp-for="Email" autocomplete="email" /></label>
+        <label asp-for="Phone"><span>Phone</span><input asp-for="Phone" autocomplete="tel" /></label>
+        <label asp-for="Password"><span>Password</span><input asp-for="Password" type="password" autocomplete="new-password" /></label>
+        <div class="actions">
+            <button type="submit">Create Account</button>
+            <a class="btn secondary" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">I Already Have Account</a>
+        </div>
+    </form>
+</section>

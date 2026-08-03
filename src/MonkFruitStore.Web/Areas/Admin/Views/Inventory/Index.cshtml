@@ -1,0 +1,29 @@
+@model IReadOnlyList<InventoryTransaction>
+@{
+    ViewData["Title"] = "Inventory";
+    var products = (IReadOnlyList<Product>)ViewBag.Products;
+}
+<h1>Inventory</h1>
+@if (TempData["Error"] is string error)
+{
+    <div class="alert">@error</div>
+}
+<form class="panel" asp-action="Adjust" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-grid">
+        <label><span>Product</span><select name="ProductId">@foreach (var product in products) { <option value="@product.Id">@product.Name (@product.StockQuantity)</option> }</select></label>
+        <label><span>Quantity change</span><input name="QuantityChange" type="number" /></label>
+    </div>
+    <label><span>Reason</span><input name="Reason" /></label>
+    <button type="submit">Record Adjustment</button>
+</form>
+<table class="table">
+    <thead><tr><th>Date</th><th>Product</th><th>Change</th><th>Before</th><th>After</th><th>Reason</th></tr></thead>
+    <tbody>
+    @foreach (var tx in Model)
+    {
+        var product = products.FirstOrDefault(p => p.Id == tx.ProductId);
+        <tr><td>@tx.CreatedAt.LocalDateTime</td><td>@product?.Name</td><td>@tx.QuantityChange</td><td>@tx.StockBefore</td><td>@tx.StockAfter</td><td>@tx.Reason</td></tr>
+    }
+    </tbody>
+</table>

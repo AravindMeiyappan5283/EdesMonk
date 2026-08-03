@@ -1,0 +1,15 @@
+@{
+    ViewData["Title"] = "Admin Login";
+}
+<section class="panel" style="max-width: 460px">
+    <h1>Admin Login</h1>
+    <p class="muted">Default local credentials: admin / EdesMonk@123. Change these in configuration before deployment.</p>
+    <div asp-validation-summary="All"></div>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+        <label><span>Username</span><input name="username" autocomplete="username" /></label>
+        <label><span>Password</span><input name="password" type="password" autocomplete="current-password" /></label>
+        <button type="submit">Login</button>
+    </form>
+</section>

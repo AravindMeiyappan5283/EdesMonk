@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\MonkFruitStore.Domain\MonkFruitStore.Domain.csproj" />
+    <ProjectReference Include="..\MonkFruitStore.Application\MonkFruitStore.Application.csproj" />
+    <ProjectReference Include="..\MonkFruitStore.Infrastructure\MonkFruitStore.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+</Project>

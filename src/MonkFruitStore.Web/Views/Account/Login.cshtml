@@ -1,0 +1,19 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+<section class="panel" style="max-width: 520px">
+    <h1>Customer Login</h1>
+    <p class="muted">Log in to load your saved cart and view your orders.</p>
+    <div asp-validation-summary="All"></div>
+    <form asp-action="Login" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ReturnUrl" />
+        <label asp-for="Email"><span>Email</span><input asp-for="Email" autocomplete="email" /></label>
+        <label asp-for="Password"><span>Password</span><input asp-for="Password" type="password" autocomplete="current-password" /></label>
+        <div class="actions">
+            <button type="submit">Login</button>
+            <a class="btn secondary" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl">Create Account</a>
+        </div>
+    </form>
+</section>

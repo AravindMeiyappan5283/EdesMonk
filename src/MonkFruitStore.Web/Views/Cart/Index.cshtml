@@ -1,0 +1,59 @@
+@model CartViewModel
+@{
+    ViewData["Title"] = "Cart";
+}
+<h1>Your Cart</h1>
+@if (!string.IsNullOrWhiteSpace(Model.Message))
+{
+    <div class="alert">@Model.Message</div>
+}
+@if (Model.Quote.Lines.Count == 0)
+{
+    <div class="panel">
+        <p>Your cart is empty.</p>
+        <a class="btn" asp-controller="Shop" asp-action="Index">Start Shopping</a>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Total</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var line in Model.Quote.Lines)
+        {
+            <tr>
+                <td>@line.ProductName<br /><span class="muted">@line.Sku | @line.PackSize</span></td>
+                <td>₹@line.UnitPrice.ToString("N0")</td>
+                <td>
+                    <form asp-action="Update" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="ProductId" value="@line.ProductId" />
+                        <input type="number" name="Quantity" value="@line.Quantity" min="0" max="20" />
+                        <button class="secondary" type="submit">Update</button>
+                    </form>
+                </td>
+                <td>₹@line.LineTotal.ToString("N0")</td>
+                <td></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    <section class="panel">
+        <form class="actions" asp-action="Coupon" method="post">
+            @Html.AntiForgeryToken()
+            <input name="couponCode" value="@Model.CouponCode" placeholder="Coupon e.g. LAUNCH10" />
+            <button class="secondary" type="submit">Apply Coupon</button>
+        </form>
+        <p>Subtotal: ₹@Model.Quote.Subtotal.ToString("N0")</p>
+        <p>Discount: ₹@Model.Quote.DiscountAmount.ToString("N0")</p>
+        <p>Shipping: ₹@Model.Quote.ShippingCharge.ToString("N0")</p>
+        <p class="price">Payable: ₹@Model.Quote.TotalAmount.ToString("N0")</p>
+        <div class="actions">
+            <a class="btn" asp-controller="Checkout" asp-action="Index">Checkout</a>
+            <form asp-action="Clear" method="post">
+                @Html.AntiForgeryToken()
+                <button class="secondary" type="submit">Clear Cart</button>
+            </form>
+        </div>
+    </section>
+}
