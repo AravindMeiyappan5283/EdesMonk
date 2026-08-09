@@ -30,14 +30,14 @@ public sealed class JsonStoreRepository : IStoreRepository
         {
             if (!File.Exists(_path))
             {
-                var seed = Seed();
+                var seed = CreateSeed();
                 await SaveUnsafeAsync(seed, ct);
                 return seed;
             }
 
             await using var stream = File.OpenRead(_path);
             var snapshot = await JsonSerializer.DeserializeAsync<StoreSnapshot>(stream, JsonOptions, ct);
-            return snapshot ?? Seed();
+            return snapshot ?? CreateSeed();
         }
         finally
         {
@@ -64,7 +64,18 @@ public sealed class JsonStoreRepository : IStoreRepository
         await JsonSerializer.SerializeAsync(stream, snapshot, JsonOptions, ct);
     }
 
-    private static StoreSnapshot Seed()
+    internal static async Task<StoreSnapshot?> TryReadSnapshotFileAsync(string path, CancellationToken ct = default)
+    {
+        if (!File.Exists(path))
+        {
+            return null;
+        }
+
+        await using var stream = File.OpenRead(path);
+        return await JsonSerializer.DeserializeAsync<StoreSnapshot>(stream, JsonOptions, ct);
+    }
+
+    internal static StoreSnapshot CreateSeed()
     {
         var classicId = Guid.NewGuid().ToString("N");
         var familyId = Guid.NewGuid().ToString("N");

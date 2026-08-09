@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="Google.Cloud.Firestore" Version="3.10.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
     <ProjectReference Include="..\MonkFruitStore.Domain\MonkFruitStore.Domain.csproj" />
     <ProjectReference Include="..\MonkFruitStore.Application\MonkFruitStore.Application.csproj" />
   </ItemGroup>

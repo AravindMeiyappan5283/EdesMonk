@@ -3,6 +3,7 @@ using MonkFruitStore.Application;
 using MonkFruitStore.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
@@ -45,7 +46,44 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
     options.IdleTimeout = TimeSpan.FromHours(8);
 });
-builder.Services.AddSingleton<IStoreRepository>(_ => new JsonStoreRepository(builder.Environment.ContentRootPath));
+builder.Services.AddSingleton<IStoreRepository>(services =>
+{
+    var localRepository = new JsonStoreRepository(builder.Environment.ContentRootPath);
+    var provider = builder.Configuration["Store:Provider"];
+    if (provider?.Equals("Firebase", StringComparison.OrdinalIgnoreCase) == true ||
+        provider?.Equals("Firestore", StringComparison.OrdinalIgnoreCase) == true)
+    {
+        var projectId = builder.Configuration["Firebase:ProjectId"]
+            ?? Environment.GetEnvironmentVariable("FIREBASE_PROJECT_ID");
+        var credentialsPath = builder.Configuration["Firebase:CredentialsPath"]
+            ?? Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+
+        if (!string.IsNullOrWhiteSpace(credentialsPath))
+        {
+            var resolvedCredentialsPath = Path.IsPathRooted(credentialsPath)
+                ? credentialsPath
+                : Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, credentialsPath));
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", resolvedCredentialsPath);
+        }
+
+        var collectionName = builder.Configuration["Firebase:Collection"] ?? "stores";
+        var documentId = builder.Configuration["Firebase:Document"] ?? "edesmonk";
+        var localSnapshotPath = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "store.json");
+        var firestoreRepository = new FirestoreStoreRepository(projectId ?? string.Empty, collectionName, documentId, localSnapshotPath);
+        var useFallback = builder.Configuration.GetValue("Firebase:FallbackToJsonOnError", true);
+        if (useFallback)
+        {
+            return new FallbackStoreRepository(
+                firestoreRepository,
+                localRepository,
+                services.GetRequiredService<ILogger<FallbackStoreRepository>>());
+        }
+
+        return firestoreRepository;
+    }
+
+    return localRepository;
+});
 builder.Services.AddScoped<IStorefrontService, StorefrontService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICheckoutService, CheckoutService>();
