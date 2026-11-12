@@ -35,8 +35,8 @@ public sealed class JsonStoreRepository : IStoreRepository
                 return seed;
             }
 
-            await using var stream = File.OpenRead(_path);
-            var snapshot = await JsonSerializer.DeserializeAsync<StoreSnapshot>(stream, JsonOptions, ct);
+            var json = await File.ReadAllTextAsync(_path, ct);
+            var snapshot = JsonSerializer.Deserialize<StoreSnapshot>(StoreSnapshotText.Clean(json), JsonOptions);
             return snapshot ?? CreateSeed();
         }
         finally
@@ -71,8 +71,8 @@ public sealed class JsonStoreRepository : IStoreRepository
             return null;
         }
 
-        await using var stream = File.OpenRead(path);
-        return await JsonSerializer.DeserializeAsync<StoreSnapshot>(stream, JsonOptions, ct);
+        var json = await File.ReadAllTextAsync(path, ct);
+        return JsonSerializer.Deserialize<StoreSnapshot>(StoreSnapshotText.Clean(json), JsonOptions);
     }
 
     internal static StoreSnapshot CreateSeed()
@@ -96,7 +96,7 @@ public sealed class JsonStoreRepository : IStoreRepository
                     Slug = "edesmonk-classic-blend",
                     Sku = "EM-CLASSIC-050",
                     CategoryId = "sweeteners",
-                    ShortDescription = "Everyday monk fruit sweetener for coffee, tea and desserts.",
+                    ShortDescription = "Everyday sweetener for coffee, tea and desserts.",
                     Description = "A balanced 1:1 sweetness guide for daily drinks, breakfast bowls and simple baking.",
                     Ingredients = "Monk fruit extract blend. Final approved label text should replace this placeholder before launch.",
                     PackSize = "50 servings",
@@ -134,7 +134,7 @@ public sealed class JsonStoreRepository : IStoreRepository
                     Slug = "edesmonk-travel-pack",
                     Sku = "EM-TRAVEL-020",
                     CategoryId = "sweeteners",
-                    ShortDescription = "Portable monk fruit sweetener for office and travel routines.",
+                    ShortDescription = "Portable sweetener for office and travel routines.",
                     Description = "Convenient sachet-style usage for coffees, teas and sweetness on the move.",
                     Ingredients = "Monk fruit extract blend. Final approved label text should replace this placeholder before launch.",
                     PackSize = "20 servings",

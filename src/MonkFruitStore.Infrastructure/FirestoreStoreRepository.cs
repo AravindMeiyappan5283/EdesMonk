@@ -48,7 +48,7 @@ public sealed class FirestoreStoreRepository : IStoreRepository
                 return JsonStoreRepository.CreateSeed();
             }
 
-            return JsonSerializer.Deserialize<StoreSnapshot>(json, JsonOptions) ?? JsonStoreRepository.CreateSeed();
+            return JsonSerializer.Deserialize<StoreSnapshot>(StoreSnapshotText.Clean(json), JsonOptions) ?? JsonStoreRepository.CreateSeed();
         }
         finally
         {
