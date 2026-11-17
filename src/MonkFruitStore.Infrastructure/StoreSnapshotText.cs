@@ -8,8 +8,13 @@ internal static class StoreSnapshotText
         @"monk\s+fruit\s+sweetener",
         RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
+    private static readonly Regex LegacyClassicDescription = new(
+        @"Everyday\s+sweetener\s+for\s+coffee,\s*tea\s+and\s+desserts\.?",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
     public static string Clean(string json)
     {
-        return LegacyProductPhrase.Replace(json, "sweetener");
+        var cleaned = LegacyProductPhrase.Replace(json, "sweetener");
+        return LegacyClassicDescription.Replace(cleaned, "MonkEryth");
     }
 }

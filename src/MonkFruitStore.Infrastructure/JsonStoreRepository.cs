@@ -96,7 +96,7 @@ public sealed class JsonStoreRepository : IStoreRepository
                     Slug = "edesmonk-classic-blend",
                     Sku = "EM-CLASSIC-050",
                     CategoryId = "sweeteners",
-                    ShortDescription = "Everyday sweetener for coffee, tea and desserts.",
+                    ShortDescription = "MonkEryth",
                     Description = "A balanced 1:1 sweetness guide for daily drinks, breakfast bowls and simple baking.",
                     Ingredients = "Monk fruit extract blend. Final approved label text should replace this placeholder before launch.",
                     PackSize = "50 servings",
